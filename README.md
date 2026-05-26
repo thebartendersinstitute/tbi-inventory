@@ -38,21 +38,46 @@ El pesaje elimina la subjetividad. La báscula siempre da el mismo número. Y co
 
 ## Cómo instalar en celular
 
-No necesitas descargar nada de una tienda. El proceso es:
+La app es un único archivo HTML que se instala directamente desde el navegador, sin pasar por ninguna tienda de aplicaciones. El proceso completo es el siguiente:
+
+### Paso 1 — Descarga el archivo
+
+1. Entra a este repositorio desde tu celular o computadora
+2. Toca o haz clic sobre el archivo **`index.html`**
+3. En la esquina superior derecha del visor de código, toca el ícono de descarga (flecha apuntando hacia abajo) o el botón **"Raw"**
+4. El archivo se descarga a tu carpeta de Descargas
+
+> Si lo descargaste desde computadora, pásalo al celular por WhatsApp, cable USB, Google Drive o como prefieras.
+
+### Paso 2 — Ábrelo en el navegador
+
+**En Android:**
+1. Abre el explorador de archivos de tu celular
+2. Entra a la carpeta **Descargas**
+3. Toca el archivo `index.html`
+4. Si el sistema pregunta con qué app abrirlo, selecciona **Chrome**
+
+**En iPhone / iPad:**
+1. Abre la app **Archivos**
+2. Entra a **Descargas**
+3. Toca el archivo `index.html`
+4. El archivo se abre directamente en Safari
+
+### Paso 3 — Fíjalo en tu pantalla de inicio
 
 **En Android (Chrome):**
-1. Abre Chrome y entra a la URL de la app
-2. Toca el menú (tres puntos arriba a la derecha)
-3. Selecciona "Agregar a pantalla de inicio"
-4. Confirma. La app aparece en tu pantalla de inicio como cualquier otra aplicación
+1. Con la app abierta en Chrome, toca el menú (los tres puntos arriba a la derecha)
+2. Selecciona **"Agregar a pantalla de inicio"**
+3. Confirma el nombre y toca **Agregar**
+4. La app aparece en tu pantalla de inicio como cualquier otra aplicación
 
 **En iPhone / iPad (Safari):**
-1. Abre Safari y entra a la URL de la app
-2. Toca el botón de compartir (el cuadro con la flecha hacia arriba)
-3. Selecciona "Agregar a pantalla de inicio"
-4. Confirma. La app aparece en tu pantalla de inicio
+1. Con la app abierta en Safari, toca el botón de compartir (el cuadro con la flecha hacia arriba, en la barra inferior)
+2. Desliza hacia abajo en el menú y selecciona **"Agregar a pantalla de inicio"**
+3. Confirma el nombre y toca **Agregar**
+4. La app aparece en tu pantalla de inicio
 
-> Una vez instalada, la app funciona sin conexión a internet.
+> Una vez instalada, la app funciona sin conexión a internet. No necesitas volver a abrir el archivo — úsala siempre desde el ícono en tu pantalla de inicio.
 
 ---
 
