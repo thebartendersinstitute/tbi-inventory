@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>TBI Inventory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --bg2: #161616;
+  --bg3: #1e1e1e;
+  --bg4: #262626;
+  --border: #2e2e2e;
+  --border2: #3a3a3a;
+  --text: #f0ece3;
+  --text2: #9a9590;
+  --text3: #5a5650;
+  --amber: #e8a020;
+  --amber2: #f5b840;
+  --amber-dim: rgba(232,160,32,0.12);
+  --green: #3dba6e;
+  --green-dim: rgba(61,186,110,0.12);
+  --red: #e85050;
+  --red-dim: rgba(232,80,80,0.12);
+  --teal: #2ab5a0;
+  --radius: 6px;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 400;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ── */
+#root { display: flex; flex-direction: column; min-height: 100vh; }
+.app-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.app-logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  font-weight: 700;
+}
+.app-logo span { color: var(--text3); font-weight: 400; }
+.main-content { flex: 1; padding: 16px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+/* ── NAV BOTTOM ── */
+.bottom-nav {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  position: sticky; bottom: 0;
+  z-index: 100;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 10px 4px 8px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-family: var(--sans); font-size: 10px;
+  transition: color 0.15s;
+}
+.nav-btn.active { color: var(--amber); }
+.nav-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── CARDS & SECTIONS ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── FORM ELEMENTS ── */
+label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 5px; font-weight: 500; }
+input, select, textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus { border-color: var(--amber); }
+input[type=number] { font-family: var(--mono); font-size: 16px; }
+.input-group { margin-bottom: 14px; }
+.input-row { display: flex; gap: 10px; }
+.input-row .input-group { flex: 1; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 18px;
+  border-radius: var(--radius);
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  cursor: pointer; border: none; transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--amber); color: #0d0d0d; }
+.btn-primary:active { background: var(--amber2); transform: scale(0.98); }
+.btn-ghost { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); }
+.btn-ghost:active { background: var(--bg4); }
+.btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid transparent; }
+.btn-success { background: var(--green-dim); color: var(--green); border: 1px solid transparent; }
+.btn-full { width: 100%; }
+.btn-sm { padding: 7px 12px; font-size: 12px; }
+
+/* ── TAGS & BADGES ── */
+.badge {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 3px; font-size: 11px; font-family: var(--mono);
+  font-weight: 700; letter-spacing: 0.04em;
+}
+.badge-amber { background: var(--amber-dim); color: var(--amber); }
+.badge-green { background: var(--green-dim); color: var(--green); }
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-gray { background: var(--bg4); color: var(--text2); }
+
+/* ── BOTTLE CARD ── */
+.bottle-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.bottle-item:active { border-color: var(--amber); }
+.bottle-code {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: var(--amber); min-width: 54px;
+}
+.bottle-info { flex: 1; min-width: 0; }
+.bottle-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bottle-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.bottle-pct { text-align: right; }
+.pct-num { font-family: var(--mono); font-size: 18px; font-weight: 700; }
+.pct-bar { width: 40px; height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 4px; margin-left: auto; }
+.pct-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width 0.3s; }
+
+/* ── RESULT DISPLAY ── */
+.result-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-top: 14px;
+}
+.result-cell {
+  background: var(--bg3); border-radius: var(--radius);
+  padding: 12px; text-align: center;
+}
+.result-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+.result-val { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--amber2); }
+.result-val.big { font-size: 28px; }
+.result-unit { font-size: 11px; color: var(--text2); }
+
+/* ── PROGRESS BAR GRANDE ── */
+.vol-bar-wrap { margin: 14px 0; }
+.vol-bar-track { height: 8px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
+.vol-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s, background 0.4s; }
+.vol-bar-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+/* ── MODAL / OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); z-index: 200;
+  display: flex; align-items: flex-end;
+}
+.sheet {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-radius: 14px 14px 0 0;
+  padding: 20px 16px 32px;
+  width: 100%; max-height: 92vh; overflow-y: auto;
+}
+.sheet-handle {
+  width: 36px; height: 4px; background: var(--border2);
+  border-radius: 2px; margin: 0 auto 16px;
+}
+.sheet-title { font-family: var(--mono); font-size: 13px; color: var(--amber); letter-spacing: 0.06em; margin-bottom: 16px; }
+
+/* ── TOASTS ── */
+.toast {
+  position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+  background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 10px 18px;
+  font-size: 13px; z-index: 300;
+  animation: toastIn 0.2s ease;
+}
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red); }
+@keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(-6px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+/* ── EMPTY STATE ── */
+.empty { text-align: center; padding: 48px 16px; color: var(--text3); }
+.empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+.empty p { font-size: 14px; line-height: 1.6; }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+/* ── SEARCH ── */
+.search-wrap { position: relative; margin-bottom: 14px; }
+.search-wrap input { padding-left: 36px; }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); opacity: 0.4; pointer-events: none; }
+
+/* ── LIST ITEM ── */
+.list-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 12px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 6px;
+}
+.list-item-name { font-size: 14px; }
+.list-item-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.actions-row { display: flex; gap: 8px; margin-top: 14px; }
+
+/* ── SELECT custom ── */
+select option { background: #1e1e1e; }
+
+/* ── STAT ROW ── */
+.stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { font-size: 13px; color: var(--text2); }
+.stat-val { font-family: var(--mono); font-size: 14px; }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; background: var(--bg3); padding: 4px; border-radius: var(--radius); }
+.tab { flex: 1; padding: 8px; border: none; background: none; color: var(--text2); font-size: 13px; font-family: var(--sans); font-weight: 500; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--bg); color: var(--text); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.4/dexie.min.js"></script>
+
+<script>
+const { useState, useEffect, useRef, useCallback } = React;
+const h = React.createElement;
+
+// ═══════════════════════════════════════════
+// DATABASE
+// ═══════════════════════════════════════════
+const db = new Dexie('TBIInventory');
+db.version(1).stores({
+  productos: '++id, nombre, categoria',
+  densidades: '++id, id_producto, vigente',
+  botellas: '++id, codigo, id_producto, estado',
+  lecturas: '++id, id_botella, fecha',
+  ajustes: '++id, id_botella, fecha',
+  movimientos: '++id, id_botella, fecha',
+});
+
+// Seed: tabla TBI de referencia
+async function seedProductos() {
+  const count = await db.productos.count();
+  if (count > 0) return;
+  const refs = [
+    { nombre:'Amaretto', marca:'Disaronno', categoria:'licor', capacidad_nominal:750, densidad_ref:1.0800 },
+    { nombre:'Blue Curaçao', marca:'Finest Call', categoria:'licor', capacidad_nominal:750, densidad_ref:1.1292 },
+    { nombre:'Campari', marca:'Campari', categoria:'aperitivo', capacidad_nominal:750, densidad_ref:1.0664 },
+    { nombre:'Cointreau', marca:'Cointreau', categoria:'licor', capacidad_nominal:750, densidad_ref:1.0385 },
+    { nombre:'Grand Marnier', marca:'Grand Marnier', categoria:'licor', capacidad_nominal:750, densidad_ref:1.0300 },
+    { nombre:'Grenadina', marca:'Finest Call', categoria:'jarabe', capacidad_nominal:750, densidad_ref:1.2867 },
+    { nombre:'Irish Cream', marca:'Baileys', categoria:'crema', capacidad_nominal:750, densidad_ref:1.0570 },
+    { nombre:'Jägermeister', marca:'Jägermeister', categoria:'licor', capacidad_nominal:750, densidad_ref:1.0072 },
+    { nombre:'Kahlúa', marca:'Kahlúa', categoria:'licor_cafe', capacidad_nominal:750, densidad_ref:1.0790 },
+    { nombre:'Frangelico', marca:'Frangelico', categoria:'licor', capacidad_nominal:750, densidad_ref:1.0650 },
+    { nombre:'Sambuca', marca:'Romana Sambuca', categoria:'licor', capacidad_nominal:750, densidad_ref:1.0900 },
+    { nombre:'Southern Comfort', marca:'Southern Comfort', categoria:'licor', capacidad_nominal:750, densidad_ref:0.9700 },
+    { nombre:'Chambord', marca:'Chambord', categoria:'licor', capacidad_nominal:750, densidad_ref:1.1300 },
+    { nombre:'Tia Maria', marca:'Tia Maria', categoria:'licor_cafe', capacidad_nominal:750, densidad_ref:1.0950 },
+  ];
+  for (const p of refs) {
+    const pid = await db.productos.add({ ...p, activo: true, creado: Date.now() });
+    await db.densidades.add({
+      id_producto: pid, volumen_ml: 100, peso_g: p.densidad_ref * 100,
+      densidad: p.densidad_ref, instrumento: 'referencia_tbi',
+      fecha: Date.now(), vigente: true, observaciones: 'Valor de referencia TBI'
+    });
+    await db.productos.update(pid, { id_densidad_vigente: (await db.densidades.where('id_producto').equals(pid).first()).id });
+  }
+}
+seedProductos();
+
+async function limpiarSinMarca() {
+  const sinMarca = await db.productos.filter(p => !p.marca || p.marca.trim() === '').toArray();
+  for (const p of sinMarca) {
+    await db.densidades.where('id_producto').equals(p.id).delete();
+    await db.productos.delete(p.id);
+  }
+}
+limpiarSinMarca();
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function calcVolumen(pesoInicialG, pesoActualG, densidad, capacidadMl, ajustesML = 0) {
+  const perdidosG = pesoInicialG - pesoActualG;
+  const consumidoML = densidad > 0 ? perdidosG / densidad : 0;
+  const restanteML = Math.max(0, capacidadMl - consumidoML - ajustesML);
+  const pct = Math.min(100, Math.max(0, (restanteML / capacidadMl) * 100));
+  return { perdidosG, consumidoML, restanteML, pct };
+}
+
+function pctColor(pct) {
+  if (pct > 40) return 'var(--green)';
+  if (pct > 15) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function nextCodigo(botellas) {
+  if (!botellas.length) return 'A0001';
+  const nums = botellas.map(b => parseInt(b.codigo.replace(/\D/g,''))||0);
+  const next = Math.max(...nums) + 1;
+  return 'A' + String(next).padStart(4, '0');
+}
+
+function fmt(n, dec=1) { return isNaN(n) ? '—' : Number(n).toFixed(dec); }
+function fmtDate(ts) { return ts ? new Date(ts).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'2-digit'}) : '—'; }
+
+const CATEGORIAS = ['tequila','mezcal','ron','gin','whisky','vodka','licor','licor_cafe','aperitivo','crema','jarabe','amargo','otro'];
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimeout;
+function useToast() {
+  const [toast, setToast] = useState(null);
+  const show = (msg, type='success') => {
+    setToast({ msg, type });
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => setToast(null), 2400);
+  };
+  return [toast, show];
+}
+
+// ═══════════════════════════════════════════
+// ICONS
+// ═══════════════════════════════════════════
+const Icon = ({ name, size=20 }) => {
+  const paths = {
+    home: '<circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/>',
+    bottle: '<line x1="12" y1="2" x2="12" y2="6"/><path d="M9 6h6l2 4v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-8l2-4z"/>',
+    catalog: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+    scale: '<path d="M12 3v18M3 9l9-6 9 6M5 21h14"/><path d="M5 12h4m6 0h4"/>',
+    report: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+    plus: '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    back: '<polyline points="15 18 9 12 15 6"/>',
+    check: '<polyline points="20 6 9 17 4 12"/>',
+    trash: '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+    search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+    upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+    warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    edit: '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',
+  };
+  return h('svg',{width:size,height:size,viewBox:'0 0 24 24',stroke:'currentColor',fill:'none',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round',dangerouslySetInnerHTML:{__html:paths[name]||''}});
+};
+
+// ═══════════════════════════════════════════
+// VIEWS
+// ═══════════════════════════════════════════
+
+// ── DASHBOARD ──
+function Dashboard({ onNav }) {
+  const [stats, setStats] = useState({ activas:0, criticas:0, productos:0, sesiones:0 });
+  const [recientes, setRecientes] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      const [bots, prods, lects] = await Promise.all([
+        db.botellas.where('estado').equals('activa').toArray(),
+        db.productos.count(),
+        db.lecturas.orderBy('fecha').reverse().limit(5).toArray(),
+      ]);
+      const densMap = {};
+      for (const b of bots) {
+        if (!densMap[b.id_producto]) {
+          const prod = await db.productos.get(b.id_producto);
+          const dens = prod?.id_densidad_vigente ? await db.densidades.get(prod.id_densidad_vigente) : null;
+          densMap[b.id_producto] = { prod, dens };
+        }
+      }
+      let criticas = 0;
+      const items = [];
+      for (const b of bots.slice(0,20)) {
+        const { prod, dens } = densMap[b.id_producto] || {};
+        if (!dens) continue;
+        const ultima = await db.lecturas.where('id_botella').equals(b.id).reverse().first();
+        if (!ultima) continue;
+        const r = calcVolumen(b.peso_inicial_g, ultima.peso_actual_g, dens.densidad, b.capacidad_ml);
+        if (r.pct < 15) criticas++;
+        items.push({ b, prod, r });
+      }
+      items.sort((a,b)=>a.r.pct-b.r.pct);
+      setStats({ activas:bots.length, criticas, productos:prods, sesiones: lects.length });
+      setRecientes(items.slice(0,5));
+    }
+    load();
+  }, []);
+
+  return h('div', null,
+    h('div', { className:'card', style:{marginBottom:16} },
+      h('div', { style:{display:'flex',gap:8,flexWrap:'wrap'} },
+        ...[
+          { label:'Botellas activas', val: stats.activas, color: 'var(--text)' },
+          { label:'Nivel crítico', val: stats.criticas, color: stats.criticas>0?'var(--red)':'var(--green)' },
+          { label:'Productos', val: stats.productos, color: 'var(--text)' },
+        ].map(s => h('div', { key:s.label, style:{flex:'1',minWidth:80,textAlign:'center',padding:'12px 8px',background:'var(--bg3)',borderRadius:'var(--radius)'} },
+          h('div', { style:{fontFamily:'var(--mono)',fontSize:28,fontWeight:700,color:s.color} }, s.val),
+          h('div', { style:{fontSize:11,color:'var(--text3)',marginTop:3} }, s.label)
+        ))
+      )
+    ),
+    recientes.length > 0 && h('div', null,
+      h('div', { className:'section-title' }, 'Nivel más bajo'),
+      recientes.map(({ b, prod, r }) =>
+        h('div', { key:b.id, className:'bottle-item', onClick:()=>onNav('inventario') },
+          h('div', { className:'bottle-code' }, b.codigo),
+          h('div', { className:'bottle-info' },
+            h('div', { className:'bottle-name' }, prod?.nombre || '—'),
+            h('div', { className:'bottle-meta' }, `${fmt(r.restanteML)} mL restantes`)
+          ),
+          h('div', { className:'bottle-pct' },
+            h('div', { className:'pct-num', style:{color:pctColor(r.pct)} }, `${fmt(r.pct,0)}%`),
+            h('div', { className:'pct-bar' },
+              h('div', { className:'pct-fill', style:{width:`${r.pct}%`,background:pctColor(r.pct)} })
+            )
+          )
+        )
+      )
+    ),
+    stats.activas === 0 && h('div', { className:'empty' },
+      h('div', { className:'empty-icon' }, '⚗️'),
+      h('p', null, 'Sin botellas registradas aún.'),
+      h('button', { className:'btn btn-primary', style:{marginTop:16}, onClick:()=>onNav('botellas') }, '+ Registrar primera botella')
+    )
+  );
+}
+
+// ── INVENTARIO ──
+function Inventario({ toast }) {
+  const [codigo, setCodigo] = useState('');
+  const [botella, setBotella] = useState(null);
+  const [producto, setProducto] = useState(null);
+  const [densidad, setDensidad] = useState(null);
+  const [pesoActual, setPesoActual] = useState('');
+  const [resultado, setResultado] = useState(null);
+  const [guardado, setGuardado] = useState(false);
+  const inputRef = useRef();
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  async function buscarBotella(cod) {
+    const b = await db.botellas.where('codigo').equalsIgnoreCase(cod.trim()).first();
+    if (!b) { toast('Código no encontrado', 'error'); return; }
+    if (b.estado !== 'activa') { toast('Botella no activa', 'error'); return; }
+    const p = await db.productos.get(b.id_producto);
+    const d = p?.id_densidad_vigente ? await db.densidades.get(p.id_densidad_vigente) : null;
+    setBotella(b); setProducto(p); setDensidad(d);
+    setPesoActual(''); setResultado(null); setGuardado(false);
+  }
+
+  function calcular() {
+    const pa = parseFloat(pesoActual);
+    if (isNaN(pa) || !botella || !densidad) return;
+    if (pa > botella.peso_inicial_g) { toast('Peso mayor al inicial — verifica el dato', 'error'); return; }
+    const r = calcVolumen(botella.peso_inicial_g, pa, densidad.densidad, botella.capacidad_ml);
+    setResultado(r);
+  }
+
+  async function guardar() {
+    if (!resultado || !botella) return;
+    await db.lecturas.add({
+      id_botella: botella.id,
+      peso_actual_g: parseFloat(pesoActual),
+      gramos_perdidos: resultado.perdidosG,
+      vol_consumido_ml: resultado.consumidoML,
+      vol_restante_ml: resultado.restanteML,
+      pct_restante: resultado.pct,
+      id_densidad: densidad.id,
+      fecha: Date.now(),
+    });
+    if (resultado.pct < 5) await db.botellas.update(botella.id, { estado:'terminada' });
+    toast('Lectura guardada');
+    setGuardado(true);
+  }
+
+  function nueva() {
+    setCodigo(''); setBotella(null); setProducto(null);
+    setDensidad(null); setPesoActual(''); setResultado(null); setGuardado(false);
+    setTimeout(()=>inputRef.current?.focus(), 50);
+  }
+
+  useEffect(() => { if (pesoActual && botella && densidad) calcular(); }, [pesoActual]);
+
+  return h('div', null,
+    h('div', { className:'section-title' }, 'Pesaje de auditoría'),
+
+    !botella ? h('div', { className:'card' },
+      h('div', { className:'card-title' }, 'Buscar botella por código'),
+      h('div', { style:{display:'flex',gap:8} },
+        h('input', {
+          ref: inputRef,
+          value: codigo,
+          onChange: e=>setCodigo(e.target.value.toUpperCase()),
+          onKeyDown: e=>{ if(e.key==='Enter') buscarBotella(codigo); },
+          placeholder: 'Ej: A0001',
+          style:{flex:1,fontFamily:'var(--mono)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase'},
+          inputMode:'text',
+        }),
+        h('button', { className:'btn btn-primary', onClick:()=>buscarBotella(codigo) }, 'Buscar')
+      )
+    ) : h('div', null,
+      h('div', { className:'card' },
+        h('div', { style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:10} },
+          h('div', null,
+            h('div', { style:{fontFamily:'var(--mono)',fontSize:11,color:'var(--amber)',letterSpacing:'0.08em'} }, botella.codigo),
+            h('div', { style:{fontSize:17,fontWeight:500,marginTop:2} }, producto?.nombre || '—'),
+            h('div', { style:{fontSize:12,color:'var(--text2)',marginTop:2} }, `${botella.capacidad_ml} mL · densidad ${fmt(densidad?.densidad,4)}`)
+          ),
+          h('div', null,
+            h('div', { style:{fontSize:11,color:'var(--text3)'} }, 'Peso inicial'),
+            h('div', { style:{fontFamily:'var(--mono)',fontSize:16,color:'var(--text2)'} }, `${fmt(botella.peso_inicial_g,1)} g`)
+          )
+        ),
+
+        h('div', { className:'input-group', style:{marginTop:14} },
+          h('label', null, 'Peso actual en báscula (gramos)'),
+          h('input', {
+            type:'number', inputMode:'decimal',
+            value: pesoActual,
+            onChange: e=>setPesoActual(e.target.value),
+            placeholder: '0.0',
+            style:{fontSize:28,fontFamily:'var(--mono)',fontWeight:700,textAlign:'center',padding:'14px'},
+            autoFocus: true,
+          })
+        ),
+
+        resultado && h('div', null,
+          h('div', { className:'vol-bar-wrap' },
+            h('div', { className:'vol-bar-track' },
+              h('div', { className:'vol-bar-fill', style:{width:`${resultado.pct}%`,background:pctColor(resultado.pct)} })
+            ),
+            h('div', { className:'vol-bar-labels' },
+              h('span', null, '0 mL'),
+              h('span', { style:{color:pctColor(resultado.pct),fontFamily:'var(--mono)',fontWeight:700} }, `${fmt(resultado.pct,1)}%`),
+              h('span', null, `${botella.capacidad_ml} mL`)
+            )
+          ),
+          h('div', { className:'result-grid' },
+            h('div', { className:'result-cell' },
+              h('div', { className:'result-label' }, 'Consumido'),
+              h('div', { className:'result-val' }, fmt(resultado.consumidoML)),
+              h('div', { className:'result-unit' }, 'mL')
+            ),
+            h('div', { className:'result-cell' },
+              h('div', { className:'result-label' }, 'Restante'),
+              h('div', { className:'result-val big', style:{color:pctColor(resultado.pct)} }, fmt(resultado.restanteML)),
+              h('div', { className:'result-unit' }, 'mL')
+            ),
+            h('div', { className:'result-cell' },
+              h('div', { className:'result-label' }, 'Gramos perdidos'),
+              h('div', { className:'result-val' }, fmt(resultado.perdidosG)),
+              h('div', { className:'result-unit' }, 'g')
+            ),
+            h('div', { className:'result-cell' },
+              h('div', { className:'result-label' }, 'Densidad usada'),
+              h('div', { className:'result-val' }, fmt(densidad?.densidad,4)),
+              h('div', { className:'result-unit' }, 'g/mL')
+            )
+          ),
+          resultado.pct < 10 && h('div', {
+            style:{display:'flex',alignItems:'center',gap:8,background:'var(--red-dim)',border:'1px solid var(--red)',borderRadius:'var(--radius)',padding:'10px 12px',marginTop:10,color:'var(--red)',fontSize:13}
+          }, h(Icon,{name:'warning',size:16}), 'Nivel crítico — considera reponer')
+        ),
+
+        h('div', { className:'actions-row' },
+          guardado
+            ? h('button', { className:'btn btn-primary btn-full', onClick:nueva }, '+ Siguiente botella')
+            : h('button', {
+                className:'btn btn-success btn-full',
+                onClick: guardar,
+                disabled: !resultado,
+                style:{ opacity: resultado?1:0.4 }
+              }, h(Icon,{name:'check',size:16}), 'Guardar lectura')
+          ,
+          h('button', { className:'btn btn-ghost', onClick:nueva }, h(Icon,{name:'back',size:16}))
+        )
+      )
+    )
+  );
+}
+
+// ── BOTELLAS ──
+function Botellas({ toast }) {
+  const [lista, setLista] = useState([]);
+  const [search, setSearch] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [productos, setProductos] = useState([]);
+  const [form, setForm] = useState({ id_producto:'', capacidad_ml:'', peso_inicial_g:'', codigo:'' });
+  const [detalle, setDetalle] = useState(null);
+
+  async function load() {
+    const bots = await db.botellas.orderBy('id').reverse().toArray();
+    const prods = await db.productos.toArray();
+    const items = [];
+    for (const b of bots) {
+      const p = prods.find(x=>x.id===b.id_producto);
+      const ultima = await db.lecturas.where('id_botella').equals(b.id).reverse().first();
+      let pct = null;
+      if (ultima && p?.id_densidad_vigente) {
+        const dens = await db.densidades.get(p.id_densidad_vigente);
+        if (dens) pct = calcVolumen(b.peso_inicial_g, ultima.peso_actual_g, dens.densidad, b.capacidad_ml).pct;
+      }
+      items.push({ b, p, pct });
+    }
+    setLista(items);
+    setProductos(prods);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function abrirForm() {
+    const bots = await db.botellas.toArray();
+    setForm({ id_producto: productos[0]?.id||'', capacidad_ml:'750', peso_inicial_g:'', codigo: nextCodigo(bots) });
+    setShowForm(true);
+  }
+
+  async function guardar() {
+    if (!form.id_producto || !form.peso_inicial_g || !form.codigo) { toast('Completa todos los campos', 'error'); return; }
+    await db.botellas.add({
+      codigo: form.codigo.toUpperCase(),
+      id_producto: Number(form.id_producto),
+      capacidad_ml: parseFloat(form.capacidad_ml) || 750,
+      peso_inicial_g: parseFloat(form.peso_inicial_g),
+      estado: 'activa',
+      fecha_entrada: Date.now(),
+    });
+    toast('Botella registrada');
+    setShowForm(false); load();
+  }
+
+  async function cerrar(id) {
+    await db.botellas.update(id, { estado:'terminada' });
+    toast('Botella cerrada'); setDetalle(null); load();
+  }
+
+  const filtrado = lista.filter(({ b, p }) =>
+    !search || b.codigo.includes(search.toUpperCase()) || p?.nombre?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (detalle) {
+    const { b, p } = detalle;
+    return h('div', null,
+      h('div', { style:{display:'flex',alignItems:'center',gap:10,marginBottom:16} },
+        h('button', { className:'btn btn-ghost btn-sm', onClick:()=>setDetalle(null) }, h(Icon,{name:'back',size:16})),
+        h('div', { style:{fontFamily:'var(--mono)',fontSize:12,color:'var(--amber)'} }, b.codigo)
+      ),
+      h('div', { className:'card' },
+        h('div', { className:'card-title' }, 'Ficha de botella'),
+        h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Producto'), h('span',{className:'stat-val'},p?.nombre||'—')),
+        h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Marca'), h('span',{className:'stat-val'},p?.marca||'—')),
+        h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Capacidad'), h('span',{className:'stat-val'},`${b.capacidad_ml} mL`)),
+        h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Peso inicial'), h('span',{className:'stat-val'},`${fmt(b.peso_inicial_g,1)} g`)),
+        h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Entrada'), h('span',{className:'stat-val'},fmtDate(b.fecha_entrada))),
+        h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Estado'), h('span',{className:'stat-val'},h('span',{className:`badge ${b.estado==='activa'?'badge-green':'badge-gray'}`},b.estado))),
+      ),
+      h(HistorialLecturas, { idBotella: b.id, capacidad: b.capacidad_ml, pesoInicial: b.peso_inicial_g, densidad: null, producto: p }),
+      b.estado === 'activa' && h('button', { className:'btn btn-danger btn-full', style:{marginTop:8}, onClick:()=>cerrar(b.id) }, 'Cerrar botella')
+    );
+  }
+
+  return h('div', null,
+    h('div', { style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14} },
+      h('div', { className:'section-title', style:{marginBottom:0,borderBottom:'none',paddingBottom:0} }, 'Botellas'),
+      h('button', { className:'btn btn-primary btn-sm', onClick:abrirForm }, h(Icon,{name:'plus',size:14}), 'Nueva')
+    ),
+    h('div', { className:'search-wrap' },
+      h('div', { className:'search-icon' }, h(Icon,{name:'search',size:16})),
+      h('input', { placeholder:'Buscar código o producto...', value:search, onChange:e=>setSearch(e.target.value) })
+    ),
+    filtrado.length === 0 && h('div', { className:'empty' },
+      h('p', null, search ? 'Sin resultados.' : 'No hay botellas registradas.')
+    ),
+    filtrado.map(({ b, p, pct }) =>
+      h('div', { key:b.id, className:'bottle-item', onClick:()=>setDetalle({b,p}) },
+        h('div', { className:'bottle-code' }, b.codigo),
+        h('div', { className:'bottle-info' },
+          h('div', { className:'bottle-name' }, p?.nombre||'—'),
+          h('div', { className:'bottle-meta' }, `${b.capacidad_ml} mL · ${fmtDate(b.fecha_entrada)}`)
+        ),
+        pct !== null
+          ? h('div', { className:'bottle-pct' },
+              h('div', { className:'pct-num', style:{color:pctColor(pct)} }, `${fmt(pct,0)}%`),
+              h('div', { className:'pct-bar' },
+                h('div', { className:'pct-fill', style:{width:`${pct}%`,background:pctColor(pct)} })
+              )
+            )
+          : h('span', { className:'badge badge-gray' }, b.estado)
+      )
+    ),
+
+    showForm && h('div', { className:'overlay', onClick:(e)=>{ if(e.target===e.currentTarget) setShowForm(false); } },
+      h('div', { className:'sheet' },
+        h('div', { className:'sheet-handle' }),
+        h('div', { className:'sheet-title' }, 'Registrar nueva botella'),
+        h('div', { className:'input-group' },
+          h('label', null, 'Producto'),
+          h('select', { value:form.id_producto, onChange:e=>setForm({...form,id_producto:e.target.value}) },
+            productos.map(p=>h('option',{key:p.id,value:p.id},`${p.nombre}${p.marca?' · '+p.marca:''}`))
+          )
+        ),
+        h('div', { className:'input-row' },
+          h('div', { className:'input-group' },
+            h('label', null, 'Código único'),
+            h('input', { value:form.codigo, onChange:e=>setForm({...form,codigo:e.target.value}), style:{fontFamily:'var(--mono)',textTransform:'uppercase'} })
+          ),
+          h('div', { className:'input-group' },
+            h('label', null, 'Capacidad (mL)'),
+            h('input', { type:'number', inputMode:'numeric', value:form.capacidad_ml, onChange:e=>setForm({...form,capacidad_ml:e.target.value}) })
+          )
+        ),
+        h('div', { className:'input-group' },
+          h('label', null, 'Peso inicial completo (g) — botella llena en báscula'),
+          h('input', {
+            type:'number', inputMode:'decimal',
+            value:form.peso_inicial_g,
+            onChange:e=>setForm({...form,peso_inicial_g:e.target.value}),
+            placeholder:'0.0', style:{fontSize:24,fontFamily:'var(--mono)',fontWeight:700,textAlign:'center',padding:'14px'}
+          })
+        ),
+        h('div', { className:'actions-row' },
+          h('button', { className:'btn btn-primary btn-full', onClick:guardar }, 'Guardar botella'),
+          h('button', { className:'btn btn-ghost', onClick:()=>setShowForm(false) }, 'Cancelar')
+        )
+      )
+    )
+  );
+}
+
+// ── HISTORIAL LECTURAS (componente compartido) ──
+function HistorialLecturas({ idBotella, capacidad, pesoInicial }) {
+  const [lecturas, setLecturas] = useState([]);
+  useEffect(() => {
+    db.lecturas.where('id_botella').equals(idBotella).reverse().toArray().then(setLecturas);
+  }, [idBotella]);
+  if (!lecturas.length) return null;
+  return h('div', { className:'card', style:{marginTop:10} },
+    h('div', { className:'card-title' }, `Historial · ${lecturas.length} lecturas`),
+    lecturas.map((l,i) =>
+      h('div', { key:l.id, className:'stat-row' },
+        h('span', { className:'stat-label' }, fmtDate(l.fecha)),
+        h('div', { style:{textAlign:'right'} },
+          h('div', { style:{fontFamily:'var(--mono)',fontSize:13,color:pctColor(l.pct_restante)} }, `${fmt(l.pct_restante,0)}%`),
+          h('div', { style:{fontSize:11,color:'var(--text3)'} }, `${fmt(l.vol_restante_ml)} mL`)
+        )
+      )
+    )
+  );
+}
+
+// ── CATÁLOGO ──
+function Catalogo({ toast }) {
+  const [productos, setProductos] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showDens, setShowDens] = useState(null);
+  const [form, setForm] = useState({ nombre:'', marca:'', categoria:'tequila', capacidad_nominal:750 });
+  const [densForm, setDensForm] = useState({ volumen:'100', peso:'', instrumento:'probeta_100' });
+  const [search, setSearch] = useState('');
+
+  async function load() {
+    const prods = await db.productos.orderBy('nombre').toArray();
+    const items = [];
+    for (const p of prods) {
+      const dens = p.id_densidad_vigente ? await db.densidades.get(p.id_densidad_vigente) : null;
+      items.push({ p, dens });
+    }
+    setProductos(items);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function guardarProducto() {
+    if (!form.nombre) { toast('Ingresa un nombre', 'error'); return; }
+    await db.productos.add({ ...form, activo:true, creado:Date.now() });
+    toast('Producto agregado'); setShowForm(false); load();
+  }
+
+  async function guardarDensidad() {
+    const vol = parseFloat(densForm.volumen);
+    const peso = parseFloat(densForm.peso);
+    if (isNaN(peso) || peso <= 0) { toast('Ingresa un peso válido', 'error'); return; }
+    const densidad = peso / vol;
+    if (densidad < 0.7 || densidad > 1.5) { toast('Densidad fuera de rango — verifica el dato', 'error'); return; }
+    await db.densidades.where('id_producto').equals(showDens.p.id).modify({ vigente: false });
+    const did = await db.densidades.add({
+      id_producto: showDens.p.id,
+      volumen_ml: vol, peso_g: peso, densidad,
+      instrumento: densForm.instrumento,
+      fecha: Date.now(), vigente: true,
+      observaciones: `Medido con ${densForm.instrumento === 'probeta_100' ? 'probeta 100 mL' : 'matraz 10 mL'}`
+    });
+    await db.productos.update(showDens.p.id, { id_densidad_vigente: did });
+    if (densForm.instrumento === 'matraz_10') toast('Guardado — recuerda: matraz 10 mL requiere báscula de 0.01 g');
+    else toast('Densidad guardada');
+    setShowDens(null); setDensForm({ volumen:'100', peso:'', instrumento:'probeta_100' }); load();
+  }
+
+  const filtrado = productos.filter(({ p }) =>
+    !search || p.nombre.toLowerCase().includes(search.toLowerCase()) || p.marca?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return h('div', null,
+    h('div', { style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14} },
+      h('div', { className:'section-title', style:{marginBottom:0,borderBottom:'none',paddingBottom:0} }, 'Catálogo'),
+      h('button', { className:'btn btn-primary btn-sm', onClick:()=>setShowForm(true) }, h(Icon,{name:'plus',size:14}), 'Producto')
+    ),
+    h('div', { className:'search-wrap' },
+      h('div', { className:'search-icon' }, h(Icon,{name:'search',size:16})),
+      h('input', { placeholder:'Buscar producto...', value:search, onChange:e=>setSearch(e.target.value) })
+    ),
+    filtrado.map(({ p, dens }) =>
+      h('div', { key:p.id, className:'list-item' },
+        h('div', null,
+          h('div', { className:'list-item-name' }, p.nombre),
+          h('div', { className:'list-item-sub' }, `${p.marca||'Sin marca'} · ${p.categoria}`)
+        ),
+        h('div', { style:{display:'flex',alignItems:'center',gap:8} },
+          dens
+            ? h('span', { className:'badge badge-amber' }, `${fmt(dens.densidad,4)}`)
+            : h('span', { className:'badge badge-gray' }, 'sin densidad'),
+          h('button', {
+            className:'btn btn-ghost btn-sm',
+            onClick:()=>{ setShowDens({p,dens}); setDensForm({volumen:'100',peso:'',instrumento:'probeta_100'}); }
+          }, h(Icon,{name:'edit',size:14}))
+        )
+      )
+    ),
+
+    showForm && h('div', { className:'overlay', onClick:e=>{ if(e.target===e.currentTarget) setShowForm(false); } },
+      h('div', { className:'sheet' },
+        h('div', { className:'sheet-handle' }),
+        h('div', { className:'sheet-title' }, 'Nuevo producto'),
+        h('div', { className:'input-group' },
+          h('label', null, 'Nombre del producto'),
+          h('input', { value:form.nombre, onChange:e=>setForm({...form,nombre:e.target.value}), placeholder:'Ej: Tequila Reposado', autoFocus:true })
+        ),
+        h('div', { className:'input-row' },
+          h('div', { className:'input-group' },
+            h('label', null, 'Marca'),
+            h('input', { value:form.marca, onChange:e=>setForm({...form,marca:e.target.value}), placeholder:'Opcional' })
+          ),
+          h('div', { className:'input-group' },
+            h('label', null, 'Capacidad nominal (mL)'),
+            h('input', { type:'number', inputMode:'numeric', value:form.capacidad_nominal, onChange:e=>setForm({...form,capacidad_nominal:Number(e.target.value)}) })
+          )
+        ),
+        h('div', { className:'input-group' },
+          h('label', null, 'Categoría'),
+          h('select', { value:form.categoria, onChange:e=>setForm({...form,categoria:e.target.value}) },
+            CATEGORIAS.map(c=>h('option',{key:c,value:c},c))
+          )
+        ),
+        h('div', { className:'actions-row' },
+          h('button', { className:'btn btn-primary btn-full', onClick:guardarProducto }, 'Guardar'),
+          h('button', { className:'btn btn-ghost', onClick:()=>setShowForm(false) }, 'Cancelar')
+        )
+      )
+    ),
+
+    showDens && h('div', { className:'overlay', onClick:e=>{ if(e.target===e.currentTarget) setShowDens(null); } },
+      h('div', { className:'sheet' },
+        h('div', { className:'sheet-handle' }),
+        h('div', { className:'sheet-title' }, `Medir densidad — ${showDens.p.nombre}`),
+        showDens.dens && h('div', { style:{background:'var(--bg3)',borderRadius:'var(--radius)',padding:'10px 12px',marginBottom:14,fontSize:12,color:'var(--text2)'} },
+          `Densidad actual: `, h('span',{style:{fontFamily:'var(--mono)',color:'var(--amber)'}},fmt(showDens.dens.densidad,4)), ` g/mL · ${showDens.dens.instrumento}`
+        ),
+        h('div', { className:'input-group' },
+          h('label', null, 'Instrumento de medición'),
+          h('select', { value:densForm.instrumento, onChange:e=>{
+            setDensForm({...densForm, instrumento:e.target.value, volumen:e.target.value==='probeta_100'?'100':'10'});
+          }},
+            h('option', {value:'probeta_100'}, 'Probeta / matraz 100 mL (recomendado)'),
+            h('option', {value:'matraz_10'}, 'Matraz aforado 10 mL (báscula 0.01 g)')
+          )
+        ),
+        densForm.instrumento === 'matraz_10' && h('div', {
+          style:{display:'flex',alignItems:'center',gap:8,background:'var(--amber-dim)',border:'1px solid var(--amber)',borderRadius:'var(--radius)',padding:'10px 12px',marginBottom:14,color:'var(--amber)',fontSize:12}
+        }, h(Icon,{name:'warning',size:14}), 'Requiere báscula con resolución de 0.01 g o menor'),
+        h('div', { className:'input-group' },
+          h('label', null, `Peso del líquido en báscula tareada (${densForm.volumen} mL exactos)`),
+          h('input', {
+            type:'number', inputMode:'decimal',
+            value:densForm.peso, onChange:e=>setDensForm({...densForm,peso:e.target.value}),
+            placeholder:`Ej: ${(parseFloat(densForm.volumen)*0.94).toFixed(1)}`,
+            style:{fontSize:24,fontFamily:'var(--mono)',fontWeight:700,textAlign:'center',padding:'14px'},
+            autoFocus:true,
+          })
+        ),
+        densForm.peso && !isNaN(parseFloat(densForm.peso)) && h('div', { style:{textAlign:'center',marginBottom:14} },
+          h('div', { style:{fontSize:12,color:'var(--text3)'} }, 'Densidad calculada'),
+          h('div', { style:{fontFamily:'var(--mono)',fontSize:32,fontWeight:700,color:'var(--amber2)'} },
+            fmt(parseFloat(densForm.peso)/parseFloat(densForm.volumen),4)
+          ),
+          h('div', { style:{fontSize:12,color:'var(--text3)'} }, 'g/mL')
+        ),
+        h('div', { className:'actions-row' },
+          h('button', { className:'btn btn-primary btn-full', onClick:guardarDensidad }, 'Guardar densidad'),
+          h('button', { className:'btn btn-ghost', onClick:()=>setShowDens(null) }, 'Cancelar')
+        )
+      )
+    )
+  );
+}
+
+// ── REPORTES ──
+function Reportes({ toast }) {
+  const [tab, setTab] = useState('actual');
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [confirmImport, setConfirmImport] = useState(null);
+  const importRef = useRef();
+
+  async function loadActual() {
+    setLoading(true);
+    const bots = await db.botellas.where('estado').equals('activa').toArray();
+    const result = [];
+    for (const b of bots) {
+      const p = await db.productos.get(b.id_producto);
+      const dens = p?.id_densidad_vigente ? await db.densidades.get(p.id_densidad_vigente) : null;
+      const ultima = await db.lecturas.where('id_botella').equals(b.id).reverse().first();
+      if (!ultima || !dens) continue;
+      const r = calcVolumen(b.peso_inicial_g, ultima.peso_actual_g, dens.densidad, b.capacidad_ml);
+      result.push({ b, p, r, ultima });
+    }
+    result.sort((a,b)=>a.r.pct-b.r.pct);
+    setItems(result);
+    setLoading(false);
+  }
+
+  async function loadConsumo() {
+    setLoading(true);
+    const bots = await db.botellas.toArray();
+    const result = [];
+    for (const b of bots) {
+      const p = await db.productos.get(b.id_producto);
+      const dens = p?.id_densidad_vigente ? await db.densidades.get(p.id_densidad_vigente) : null;
+      const lects = await db.lecturas.where('id_botella').equals(b.id).sortBy('fecha');
+      if (lects.length < 2 || !dens) continue;
+      const primera = lects[0]; const ultima = lects[lects.length-1];
+      const consumidoG = primera.peso_actual_g - ultima.peso_actual_g;
+      const consumidoML = consumidoG / dens.densidad;
+      result.push({ b, p, consumidoML, dias: Math.round((ultima.fecha-primera.fecha)/86400000)||1, lecturas:lects.length });
+    }
+    result.sort((a,b)=>b.consumidoML-a.consumidoML);
+    setItems(result);
+    setLoading(false);
+  }
+
+  useEffect(() => { tab==='actual'?loadActual():loadConsumo(); }, [tab]);
+
+  function exportCSV() {
+    let csv = '';
+    if (tab === 'actual') {
+      csv = 'Código,Producto,mL restantes,% restante,Última lectura\n';
+      csv += items.map(({b,p,r,ultima})=>`${b.codigo},"${p?.nombre||''}",${fmt(r.restanteML)},${fmt(r.pct,1)},${fmtDate(ultima?.fecha)}`).join('\n');
+    } else {
+      csv = 'Código,Producto,mL consumidos,Días,Lecturas\n';
+      csv += items.map(({b,p,consumidoML,dias,lecturas})=>`${b.codigo},"${p?.nombre||''}",${fmt(consumidoML)},${dias},${lecturas}`).join('\n');
+    }
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `tbi-reporte-${tab}-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV descargado');
+  }
+
+  async function exportBackup() {
+    try {
+      const [botellas, lecturas, ajustes, movimientos] = await Promise.all([
+        db.botellas.toArray(),
+        db.lecturas.toArray(),
+        db.ajustes.toArray(),
+        db.movimientos.toArray(),
+      ]);
+      const backup = {
+        version: 1,
+        exportado: new Date().toISOString(),
+        app: 'TBI Inventory',
+        botellas,
+        lecturas,
+        ajustes,
+        movimientos,
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tbi-backup-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast(`Backup exportado — ${botellas.length} botellas, ${lecturas.length} lecturas`);
+    } catch(e) {
+      toast('Error al exportar', 'error');
+    }
+  }
+
+  function leerArchivoImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.version || !data.botellas || !data.lecturas) {
+          toast('Archivo no válido — usa un backup TBI', 'error');
+          return;
+        }
+        setConfirmImport(data);
+      } catch {
+        toast('No se pudo leer el archivo', 'error');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  async function confirmarImport() {
+    if (!confirmImport) return;
+    try {
+      await db.transaction('rw', db.botellas, db.lecturas, db.ajustes, db.movimientos, async () => {
+        await db.botellas.clear();
+        await db.lecturas.clear();
+        await db.ajustes.clear();
+        await db.movimientos.clear();
+        if (confirmImport.botellas?.length)    await db.botellas.bulkAdd(confirmImport.botellas);
+        if (confirmImport.lecturas?.length)    await db.lecturas.bulkAdd(confirmImport.lecturas);
+        if (confirmImport.ajustes?.length)     await db.ajustes.bulkAdd(confirmImport.ajustes);
+        if (confirmImport.movimientos?.length) await db.movimientos.bulkAdd(confirmImport.movimientos);
+      });
+      toast(`Restaurado — ${confirmImport.botellas.length} botellas importadas`);
+      setConfirmImport(null);
+      tab==='actual'?loadActual():loadConsumo();
+    } catch(e) {
+      toast('Error al importar', 'error');
+    }
+  }
+
+  return h('div', null,
+    h('div', { style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14} },
+      h('div', { className:'section-title', style:{marginBottom:0,borderBottom:'none',paddingBottom:0} }, 'Reportes'),
+      h('button', { className:'btn btn-ghost btn-sm', onClick:exportCSV }, h(Icon,{name:'download',size:14}), 'CSV')
+    ),
+
+    h('div', { className:'card', style:{marginBottom:14} },
+      h('div', { className:'card-title' }, 'Backup de datos'),
+      h('div', { style:{fontSize:13,color:'var(--text2)',marginBottom:12,lineHeight:1.6} },
+        'Exporta un respaldo completo de tus botellas, lecturas y ajustes. Úsalo para cambiar de dispositivo o como copia de seguridad.'
+      ),
+      h('div', { style:{display:'flex',gap:8} },
+        h('button', { className:'btn btn-primary', style:{flex:1}, onClick:exportBackup },
+          h(Icon,{name:'download',size:15}), 'Exportar backup'
+        ),
+        h('button', { className:'btn btn-ghost', style:{flex:1}, onClick:()=>importRef.current?.click() },
+          h(Icon,{name:'upload',size:15}), 'Importar backup'
+        ),
+        h('input', { ref:importRef, type:'file', accept:'.json', style:{display:'none'}, onChange:leerArchivoImport })
+      )
+    ),
+
+    h('div', { className:'tabs' },
+      h('button', { className:`tab ${tab==='actual'?'active':''}`, onClick:()=>setTab('actual') }, 'Inventario actual'),
+      h('button', { className:`tab ${tab==='consumo'?'active':''}`, onClick:()=>setTab('consumo') }, 'Consumo')
+    ),
+    loading && h('div', { style:{textAlign:'center',color:'var(--text3)',padding:32,fontFamily:'var(--mono)',fontSize:12} }, 'Cargando...'),
+    !loading && items.length === 0 && h('div', { className:'empty' },
+      h('p', null, 'Sin datos suficientes. Registra botellas y realiza al menos un pesaje.')
+    ),
+    tab === 'actual' && !loading && items.map(({b,p,r,ultima}) =>
+      h('div', { key:b.id, className:'bottle-item', style:{cursor:'default'} },
+        h('div', { className:'bottle-code' }, b.codigo),
+        h('div', { className:'bottle-info' },
+          h('div', { className:'bottle-name' }, p?.nombre||'—'),
+          h('div', { className:'bottle-meta' }, `${fmt(r.restanteML)} mL · últ. ${fmtDate(ultima?.fecha)}`)
+        ),
+        h('div', { className:'bottle-pct' },
+          h('div', { className:'pct-num', style:{color:pctColor(r.pct)} }, `${fmt(r.pct,0)}%`),
+          h('div', { className:'pct-bar' }, h('div',{className:'pct-fill',style:{width:`${r.pct}%`,background:pctColor(r.pct)}}))
+        )
+      )
+    ),
+    tab === 'consumo' && !loading && items.map(({b,p,consumidoML,dias,lecturas}) =>
+      h('div', { key:b.id, className:'list-item' },
+        h('div', null,
+          h('div', { className:'list-item-name' }, `${b.codigo} · ${p?.nombre||'—'}`),
+          h('div', { className:'list-item-sub' }, `${lecturas} lecturas · ${dias} días`)
+        ),
+        h('div', { style:{textAlign:'right'} },
+          h('div', { style:{fontFamily:'var(--mono)',fontSize:16,color:'var(--amber2)'} }, fmt(consumidoML)),
+          h('div', { style:{fontSize:11,color:'var(--text3)'} }, 'mL consumidos')
+        )
+      )
+    ),
+
+    confirmImport && h('div', { className:'overlay' },
+      h('div', { className:'sheet' },
+        h('div', { className:'sheet-handle' }),
+        h('div', { className:'sheet-title' }, 'Confirmar importación'),
+        h('div', { style:{background:'var(--red-dim)',border:'1px solid var(--red)',borderRadius:'var(--radius)',padding:'12px',marginBottom:16,fontSize:13,color:'var(--red)',lineHeight:1.6} },
+          h(Icon,{name:'warning',size:14}), ' Esto reemplazará todos los datos actuales. Esta acción no se puede deshacer.'
+        ),
+        h('div', { className:'card', style:{marginBottom:16} },
+          h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Exportado'), h('span',{className:'stat-val'},fmtDate(new Date(confirmImport.exportado).getTime()))),
+          h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Botellas'), h('span',{className:'stat-val'},confirmImport.botellas?.length||0)),
+          h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Lecturas'), h('span',{className:'stat-val'},confirmImport.lecturas?.length||0)),
+          h('div', { className:'stat-row' }, h('span',{className:'stat-label'},'Ajustes'), h('span',{className:'stat-val'},confirmImport.ajustes?.length||0)),
+        ),
+        h('div', { className:'actions-row' },
+          h('button', { className:'btn btn-danger btn-full', onClick:confirmarImport }, 'Sí, restaurar este backup'),
+          h('button', { className:'btn btn-ghost', onClick:()=>setConfirmImport(null) }, 'Cancelar')
+        )
+      )
+    )
+  );
+}
+
+// ═══════════════════════════════════════════
+// APP ROOT
+// ═══════════════════════════════════════════
+function App() {
+  const [view, setView] = useState('dashboard');
+  const [toast, showToast] = useToast();
+
+  const views = {
+    dashboard: h(Dashboard, { onNav: setView }),
+    inventario: h(Inventario, { toast: showToast }),
+    botellas: h(Botellas, { toast: showToast }),
+    catalogo: h(Catalogo, { toast: showToast }),
+    reportes: h(Reportes, { toast: showToast }),
+  };
+
+  const navItems = [
+    { key:'dashboard', label:'Inicio', icon:'home' },
+    { key:'inventario', label:'Pesar', icon:'scale' },
+    { key:'botellas', label:'Botellas', icon:'bottle' },
+    { key:'catalogo', label:'Catálogo', icon:'catalog' },
+    { key:'reportes', label:'Reportes', icon:'report' },
+  ];
+
+  return h('div', { id:'root' },
+    h('header', { className:'app-header' },
+      h('div', { className:'app-logo' }, 'TBI', h('span', null, ' · INVENTORY')),
+      h('div', { style:{fontSize:11,color:'var(--text3)',fontFamily:'var(--mono)'} },
+        view.toUpperCase()
+      )
+    ),
+    h('main', { className:'main-content' },
+      views[view]
+    ),
+    toast && h('div', { className:`toast ${toast.type}` }, toast.msg),
+    h('nav', { className:'bottom-nav' },
+      navItems.map(n =>
+        h('button', { key:n.key, className:`nav-btn ${view===n.key?'active':''}`, onClick:()=>setView(n.key) },
+          h(Icon, { name:n.icon, size:20 }),
+          n.label
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>
